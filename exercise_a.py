@@ -1,5 +1,5 @@
 # UTILIZAR PROFILING PARA LA MEDICIÓN DEL TIEMPO REAL DE UN PROGRAMA
-
+import cProfile
 import random #GENERAR FICHAS ALEATORIAMENTE
 
 TA = 4  # LIMITE MAXIMO DE FICHAS QUE PUEDE QUITAR EL JUGADOR A
@@ -36,98 +36,109 @@ def mostrar_grupos(grupos):
     print("NÚMERO DE GRUPOS:", len(grupos))
     print("TOTAL DE FICHAS EN JUEGO:", total_fichas(grupos))
 
-print(" REGLAS DEL JUEGO")
-print("1. EXISTEN VARIOS GRUPOS DE FICHAS.")
-print("2. CADA JUGADOR ELIGE UN GRUPO EN SU TURNO.")
-print("3. EL JUGADOR A PUEDE ELIMINAR HASTA", TA, "FICHAS POR TURNO.")
-print("4. EL JUGADOR B PUEDE ELIMINAR HASTA", TB, "FICHAS POR TURNO.")
-print("5. GANA EL JUGADOR QUE ELIMINA LA ULTIMA FICHA.")
-print("6. EL MAXIMO DE JUGADAS ES:", MAX_JUGADAS)
+def main():
+    print(" REGLAS DEL JUEGO")
+    print("1. EXISTEN VARIOS GRUPOS DE FICHAS.")
+    print("2. CADA JUGADOR ELIGE UN GRUPO EN SU TURNO.")
+    print("3. EL JUGADOR A PUEDE ELIMINAR HASTA", TA, "FICHAS POR TURNO.")
+    print("4. EL JUGADOR B PUEDE ELIMINAR HASTA", TB, "FICHAS POR TURNO.")
+    print("5. GANA EL JUGADOR QUE ELIMINA LA ULTIMA FICHA.")
+    print("6. EL MAXIMO DE JUGADAS ES:", MAX_JUGADAS)
 
 
-# SOLICITA CUANTOS GRUPOS DE FICHAS QUIEREN LOS JUGADORES
-num_grupos = int(input(" - CON CUANTOS GRUPOS DE FICHAS QUIEREN JUGAR: "))
+    # SOLICITA CUANTOS GRUPOS DE FICHAS QUIEREN LOS JUGADORES
+    num_grupos = int(input(" - CON CUANTOS GRUPOS DE FICHAS QUIEREN JUGAR: "))
 
-# CREA LA LISTA DE GRUPOS
-grupos = []
+    # CREA LA LISTA DE GRUPOS
+    grupos = []
 
-# GENERA ALEATORIAMENTE ENTRE 1 Y 20 FICHAS POR GRUPO
-for i in range(num_grupos):
-    fichas = random.randint(1, 20)
-    grupos.append(fichas)
+    # GENERA ALEATORIAMENTE ENTRE 1 Y 20 FICHAS POR GRUPO
+    for i in range(num_grupos):
+        fichas = random.randint(1, 20)
+        grupos.append(fichas)
 
-print("\nSE GENERARON LOS GRUPOS ALEATORIAMENTE")
+    print("\nSE GENERARON LOS GRUPOS ALEATORIAMENTE")
 
-# MUESTRA EL ESTADO INICIAL DEL JUEGO
-mostrar_grupos(grupos)
-
-turno = "A" #VARIABLE PARA EL TURNO
-jugadas = 0 #CONTADOR DE JUGADAS
-
-print("\n")
-print(" INICIO DEL JUEGO")
-
-while not todos_vacios(grupos) and jugadas < MAX_JUGADAS:
-
-    print("\n")
-    print("     TURNO PARA EL JUGADOR", turno)
-
-    # DEFINE EL LIMITE SEGUN EL JUGADOR
-    if turno == "A":
-        limite = TA
-    else:
-        limite = TB
-
-    print("PUEDE ELIMINAR ENTRE 1 Y", limite, "FICHAS")
-
+    # MUESTRA EL ESTADO INICIAL DEL JUEGO
     mostrar_grupos(grupos)
 
-    # SOLICITA EL GRUPO QUE EL JUGADOR QUIERE MODIFICAR
-    grupo = int(input(" - INGRESE EL NUMERO DEL GRUPO: "))
+    turno = "A" #VARIABLE PARA EL TURNO
+    jugadas = 0 #CONTADOR DE JUGADAS
 
-    # SOLICITA CUANTAS FICHAS DESEA QUITAR
-    quitar = int(input(" - CUANTAS FICHAS DESEA ELIMINAR: "))
+    print("\n")
+    print(" INICIO DEL JUEGO")
 
-    # VERIFICA QUE EL GRUPO EXISTA
-    if grupo < 0 or grupo >= len(grupos):
-        print("ALERTA: ESTE GRUPO NO ES VÁLIDO")
-        continue
+    while not todos_vacios(grupos) and jugadas < MAX_JUGADAS:
 
-    # VERIFICA QUE EL GRUPO NO ESTE VACIO
-    if grupos[grupo] == 0:
-        print("ALERTA: ESE GRUPO ESTA VACIO")
-        continue
+        print("\n")
+        print("     TURNO PARA EL JUGADOR", turno)
 
-    # VERIFICA QUE LA CANTIDAD ESTE DENTRO DEL LIMITE
-    if quitar < 1 or quitar > limite:
-        print("ALERTA: CANTIDAD FUERA DEL LIMITE")
-        continue
+        # DEFINE EL LIMITE SEGUN EL JUGADOR
+        if turno == "A":
+            limite = TA
+        else:
+            limite = TB
 
-    # VERIFICA QUE HAYA SUFICIENTES FICHAS
-    if quitar > grupos[grupo]:
-        print("ALERTA: NO HAY SUFICIENTES FICHAS EN EL GRUPO")
-        continue
+        print("PUEDE ELIMINAR ENTRE 1 Y", limite, "FICHAS")
 
-    # REALIZA EL MOVIMIENTO RESTANDO LAS FICHAS
-    grupos[grupo] = grupos[grupo] - quitar
+        mostrar_grupos(grupos)
 
-    # AUMENTA EL CONTADOR DE JUGADAS
-    jugadas = jugadas + 1
+        # SOLICITA EL GRUPO QUE EL JUGADOR QUIERE MODIFICAR
+        grupo = int(input(" - INGRESE EL NUMERO DEL GRUPO: "))
 
-    # VERIFICA SI EL JUEGO TERMINO
-    if todos_vacios(grupos):
-        print("\nTODOS LOS GRUPOS QUEDARON VACIOS")
-        print(" - EL GANADOR ES EL JUGADOR", turno)
-        break
+        # SOLICITA CUANTAS FICHAS DESEA QUITAR
+        quitar = int(input(" - CUANTAS FICHAS DESEA ELIMINAR: "))
 
-    # CAMBIA EL TURNO ENTRE LOS JUGADORES
-    if turno == "A":
-        turno = "B"
-    else:
-        turno = "A"
+        # VERIFICA QUE EL GRUPO EXISTA
+        if grupo < 0 or grupo >= len(grupos):
+            print("ALERTA: ESTE GRUPO NO ES VÁLIDO")
+            continue
+
+        # VERIFICA QUE EL GRUPO NO ESTE VACIO
+        if grupos[grupo] == 0:
+            print("ALERTA: ESE GRUPO ESTA VACIO")
+            continue
+
+        # VERIFICA QUE LA CANTIDAD ESTE DENTRO DEL LIMITE
+        if quitar < 1 or quitar > limite:
+            print("ALERTA: CANTIDAD FUERA DEL LIMITE")
+            continue
+
+        # VERIFICA QUE HAYA SUFICIENTES FICHAS
+        if quitar > grupos[grupo]:
+            print("ALERTA: NO HAY SUFICIENTES FICHAS EN EL GRUPO")
+            continue
+
+        # REALIZA EL MOVIMIENTO RESTANDO LAS FICHAS
+        grupos[grupo] = grupos[grupo] - quitar
+
+        # AUMENTA EL CONTADOR DE JUGADAS
+        jugadas = jugadas + 1
+
+        # VERIFICA SI EL JUEGO TERMINO
+        if todos_vacios(grupos):
+            print("\nTODOS LOS GRUPOS QUEDARON VACIOS")
+            print(" - EL GANADOR ES EL JUGADOR", turno)
+            break
+
+        # CAMBIA EL TURNO ENTRE LOS JUGADORES
+        if turno == "A":
+            turno = "B"
+        else:
+            turno = "A"
 
 
-# MENSAJE SI SE ALCANZA EL LIMITE DE JUGADAS
-if jugadas == MAX_JUGADAS:
-    print("\n SE ALCANZO EL LIMITE MAXIMO DE JUGADAS")
-    print("EL JUEGO HA TERMINADO SIN UN GANADOR DEFINIDO")
+    # MENSAJE SI SE ALCANZA EL LIMITE DE JUGADAS
+    if jugadas == MAX_JUGADAS:
+        print("\n SE ALCANZO EL LIMITE MAXIMO DE JUGADAS")
+        print("EL JUEGO HA TERMINADO SIN UN GANADOR DEFINIDO")
+
+cProfile.run("main()", "resultado.prof")
+#PARA UTILIZAR LA HERRAMIENTA DE SNAKEVIZ PARA VISUALIZAR LOS RESULTADOS DEL PROFILING
+#PRIMERO: INSTALAR SNAKEVIZ CON EL COMANDO: pip install 
+#(EJECUTAR EL PROGRAMA PARA CREAR EL ARCHIVO resultado.prof)
+#SEGUNDO: EJECUTAR EL SIGUIENTE COMANDO EN LA TERMINAL: snakeviz resultado.prof
+
+#OTRA HERRAMIENTA ÚTIL Y GRÁFIA ES RUNSNAKERRUN
+#PRIMERO INSTALAR RUNSNAKERUN CON EL COMANDO: pip install runsnakerrun
+#SEGUNDO EJECUTAR EL PROGRAMA CON EL COMANDO: runsnake resultado.prof
